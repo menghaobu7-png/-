@@ -1,0 +1,239 @@
+# -# Banxa Hosted Checkout
+
+> For the complete documentation index, see [llms.txt](https://docs.banxa.com/llms.txt). Append `.md` to any page URL for its markdown version.
+
+
+Banxa-managed checkout: Banxa handles KYC, payments, and regulatory compliance in full. Redirect users or embed the checkout in your app — three integration paths, from a simple URL redirect to a full mobile SDK.
+
+**Best for:** Wallets, dApps, gaming platforms, and any team where time-to-market is the priority.
+
+If you already run your own KYC and want to embed payments natively without any Banxa screens, see [Banxa Native API](/products/native-api).
+
+## Integration paths
+
+Three ways to integrate. Choose based on your platform and how much backend work you want to do.
+
+Referral
+Construct a Banxa URL with your parameters and redirect the customer — or embed as an iFrame. No backend required. Pre-fills crypto, fiat, amount, and wallet address.
+
+Best for simple integrations, browser extensions, or any scenario without a backend.
+
+API
+Create orders server-side. Fetch live quotes in your own UI, create buy or sell orders, and redirect the customer to the returned `checkoutUrl`. Receive order updates via webhooks.
+
+Best for integrations that need quote visibility, webhook-driven tracking, or KYC sharing.
+
+Mobile SDKs
+React Native, iOS, and Android SDKs wrapping Banxa Hosted Checkout. They handle checkout presentation, return URL detection, and error handling. No backend required for core flows.
+
+Best for mobile apps that want Banxa checkout embedded in-app.
+
+## What Banxa handles
+
+KYC & Identity
+Document verification, liveness checks, and returning customer recognition — handled inside the checkout flow.
+
+Payments
+Card, bank transfer, Apple Pay, Google Pay, and local payment methods across global markets.
+
+Compliance & AML
+Sanctions screening, transaction monitoring, and ongoing compliance — Banxa's obligation, not yours.
+
+Settlement
+Fiat purchase and crypto delivery managed by Banxa. Your platform receives the confirmed transaction result.
+
+## Before you start
+
+What you need from Banxa
+A partner ID (`partnerRef`) used in all API endpoint paths, an API key for `x-api-key` authentication, and a separate set of sandbox credentials. → [Access & Setup](/products/hosted-checkout/docs/getting-started/access-and-setup)
+
+| Environment | Base URL |
+|  --- | --- |
+| Sandbox | `https://api.banxa-sandbox.com/{partnerRef}/v2/` |
+| Production | `https://api.banxa.com/{partnerRef}/v2/` |
+
+
+Always build and test against sandbox before going live. → [Authentication & Environments](/products/hosted-checkout/docs/getting-started/authentication-and-environments)
+
+## Reference
+
+API Reference
+Full endpoint reference — request schemas, response shapes, error codes.
+
+Supported Payment Methods
+All supported payment methods by country and transaction type.
+
+Supported Crypto & Blockchains
+All supported cryptocurrencies and blockchain networks.
+
+Integration Best Practices
+Error handling, idempotency, webhook validation, and production checklist.
+
+## Quick start
+
+Create a buy order and redirect the customer to the returned `checkoutUrl`. Include `externalCustomerId` to enable returning customer recognition.
+
+```bash Create a buy order
+curl -X POST "https://api.banxa.com/{partnerRef}/v2/buy" \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "crypto": "ETH",
+    "fiat": "USD",
+    "fiatAmount": "100",
+    "walletAddress": "0xe3BDEFdAeFF070925eB7FfC49F9B30c647Cb751e",
+    "redirectUrl": "https://yourapp.com/success",
+    "externalCustomerId": "user-abc123"
+  }'
+```
+
+Redirect the customer to the `checkoutUrl` in the response:
+
+```json
+{
+  "id": "3b7f1c9d2b4a8e6f5d0c7a2b3f9e1d4c",
+  "checkoutUrl": "https://pay.banxa.com/checkout/3b7f1c9d...",
+  "externalCustomerId": "user-abc123",
+  "fiat": "USD",
+  "fiatAmount": "100.00",
+  "crypto": "ETH",
+  "blockchain": "ETHEREUM"
+}
+```
+
+→ [Full API Integration guide](/products/hosted-checkout/docs/api-integration/api-integration-overview)# Getting Access
+
+> For the complete documentation index, see [llms.txt](https://docs.banxa.com/llms.txt). Append `.md` to any page URL for its markdown version.
+
+
+## What you get
+
+When you begin your Banxa integration, you'll receive access to two things:
+
+- [**Partner Dashboard**](https://dashboard.banxa.com/) — your self-service portal for configuring your integration, managing users, monitoring orders, and switching between environments.
+- **Sandbox environment** — a fully functional test environment where you can build and validate your integration before going live. No real transactions are processed.
+
+
+Your sandbox credentials are separate from production credentials. Production access is enabled by Banxa once you have completed testing and received approval.
+
+No sandbox access yet? [Talk to our team →](https://banxa.com/talk-to-our-team/)
+
+Important notice on Native API access
+The Native API is not enabled by default and is not self-serve. Access is granted per account under a signed agreement with Banxa that covers headless integration.
+
+Integrating the Native API without a signed agreement will lead to delays going live.
+
+If you do not have Native API enabled in the Partner Dashboard, contact your Banxa Account Manager to enquire about our approval process.
+
+## Two decisions before you build
+
+Before writing any code, you need to make two independent decisions. Each one can be changed later, but will require rework.
+
+### Decision 1 — Checkout display
+
+**iFrame** embeds the Banxa checkout flow directly inside your application. The customer never leaves your product.
+
+**Redirect** opens the Banxa checkout in a new tab or browser window. Banxa hosts the page, which can be co-branded with your styling.
+
+→ See [Checkout Visualisation: iFrame vs. Redirect](/products/hosted-checkout/docs/getting-started/choose-visualisation) for a full comparison.
+
+### Decision 2 — Integration method
+
+**API integration** gives you full control. You call Banxa's APIs to fetch quotes, create orders, and receive webhook notifications. This approach supports KYC sharing and lets you build a quote experience within your own UI.
+
+**Referral integration** is URL-based. You construct a Banxa URL with parameters and redirect the customer to it. No server-to-server calls required. Best for teams who want to move fast without backend complexity.
+
+**React Native SDK** wraps the API for mobile apps. Install a single package and call typed methods for quotes, orders, and checkout presentation — no backend required for core flows.
+
+→ See [Integration Method: API vs. Referral vs. SDK](/products/hosted-checkout/docs/getting-started/choose-integration-method) for a full comparison.
+
+## Your path from sandbox to production
+
+| Stage | What happens |
+|  --- | --- |
+| **Sandbox access** | Banxa provides your sandbox credentials and dashboard access |
+| **Dashboard setup** | Configure webhooks, supported crypto/blockchains, and UI settings |
+| **Build & integrate** | Implement your chosen integration method and checkout visualisation |
+| **End-to-end testing** | Complete a full test purchase using sandbox test credentials |
+| **Production launch** | Notify Banxa to enable your production environment and receive production credentials |
+
+
+> **Note:** Changes made in the dashboard take approximately 15 minutes to propagate to your integration.
+
+# Checkout Visualisation: iFrame vs. Redirect
+
+> For the complete documentation index, see [llms.txt](https://docs.banxa.com/llms.txt). Append `.md` to any page URL for its markdown version.
+
+
+The Banxa checkout is a sequence of screens that guides your customer through their crypto transaction — identity verification, payment details, and order confirmation. You choose how that checkout is presented to them.
+
+## Redirect
+
+The customer is redirected to a Banxa-hosted checkout page, either in a new tab or the same window.
+
+**How it works:**
+
+1. Your app generates a checkout URL (via Referral link or the `checkoutUrl` returned in an API order response).
+2. The customer is redirected to that URL.
+3. Banxa handles the entire checkout experience.
+4. On completion, the customer is redirected back to your `redirectUrl`.
+
+
+**Advantages:**
+
+- Least integration effort — no embedding or WebView configuration required.
+- The checkout page can be co-branded with your logo and styling.
+- Fully compatible with all payment methods including Apple Pay and Google Pay.
+
+
+**Considerations:**
+
+- The customer visibly leaves your application.
+- Less control over the in-app experience.
+
+
+## Embedded Checkout (iFrame)
+
+The Banxa checkout is embedded inside your application using an iFrame (web) or WebView (mobile).
+
+**How it works:**
+
+1. Your app generates a checkout URL.
+2. The URL is loaded inside an iFrame or WebView component in your UI.
+3. The customer completes the transaction without leaving your app.
+
+
+**Advantages:**
+
+- Seamless experience — the customer stays within your product.
+- Greater control over layout and context around the checkout.
+
+
+**Considerations:**
+
+- Requires additional WebView configuration on mobile (camera access, local storage, media playback).
+- Some payment methods (e.g., Google Pay on Android) require Custom Chrome Tabs rather than a standard WebView.
+- More integration effort than redirect.
+
+
+## Comparison
+
+|  | Redirect | iFrame / WebView |
+|  --- | --- | --- |
+| Customer leaves your app | Yes | No |
+| Integration effort | Low | Medium |
+| Co-branding support | Yes | Yes |
+| Camera / KYC support | Native browser | Requires WebView config |
+| Apple Pay | Yes | Web iFrame: No (redirects to new Banxa tab); iOS WebView: Yes |
+| Google Pay | Yes | Android: Custom Chrome Tabs required; iOS: Yes |
+
+
+## Recommendation
+
+- Choose **Redirect** if you want the fastest integration or are building a mobile app where WebView complexity is a concern.
+- Choose **iFrame / WebView** if keeping the customer inside your product is a priority and you have the capacity to handle platform-specific WebView configuration.
+
+
+Both options are compatible with both Referral and API integration methods.
+
+→ For implementation details, see [Redirect Checkout](/products/hosted-checkout/docs/checkout-experience/redirect/redirect-overview) and [Embedded Checkout (iFrame)](/products/hosted-checkout/docs/checkout-experience/iframe/iframe-overview).
